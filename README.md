@@ -1,7 +1,12 @@
 # GuruComunication
 A generic library for sending communications via various methods (SMS, Email or in-app notification)
 
+**NB:** This is a work in progress
 
+This library provides a simple mechanism
+
+- [ ] a task list item
+- [x] completed
 
 ## Backends
 

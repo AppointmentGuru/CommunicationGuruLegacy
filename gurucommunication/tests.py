@@ -1,10 +1,11 @@
 from django.test import TestCase, override_settings
-from .Sender import CommunicationClient, Templatizer
-from .models import MessageTemplate
 from django.core import mail
 from django.conf import settings
 from django.contrib.auth import get_user_model
 import unittest
+
+from .sender import CommunicationClient, Templatizer
+from .models import MessageTemplate
 
 '''
 TODO:
@@ -66,25 +67,43 @@ class TemplatizerTemplateRenderTestCase(TestCase):
 
     def setUp(self):
         self.user1 = get_user_model().objects.create(username='joesoap', password='testtest')
-        self.user2 = get_user_model().objects.create(username='joesoap', password='testtest')
-        self.template_id = test_email
+        self.user2 = get_user_model().objects.create(username='joesoap2', password='testtest')
+        self.template_id = "test_email"
         data = {
             "owner": self.user1,
             "template_id": self.template_id,
             "name": "Test email",
+            "preferred_delivery_method": 'EMAIL',
             "subject": "Hi",
-            "is_default_message": True,
+            "is_default_template": True,
             "long_message": "Hello there! {{person}}",
             "short_message": "Hello there! {{person}}",
         }
-        MessageTemplate.objects.create(**data)
+        self.template = MessageTemplate.objects.create(**data)
         self.t = Templatizer()
 
     def test_send_templated_email_uses_default_if_no_custom_template_defined(self):
 
+        msg = self.t.get_message_template(self.template_id)
+        assert isinstance(msg, MessageTemplate)
 
     def test_can_overide_default_templated_email(self):
         pass
+
+    def test_send_templated_email(self):
+        context = {
+            'person': 'Joe Soap'
+        }
+        msg = self.t.get_message_template(self.template_id)
+        result = CommunicationClient(msg.preferred_delivery_method).send_template(
+            to=['joe@soap.com'],
+            template=self.template,
+            context=context,
+            from_user=None
+        )
+
+        assert len(mail.outbox) == 1
+
 
 
 

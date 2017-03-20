@@ -126,20 +126,20 @@ STATIC_URL = '/static/'
 ## Mail variables:
 
 # SMS / TWILLIO
-TWILLIO_SID = "AC017ac887b3e1bf6e48a9b8c360d707af"
-TWILLIO_AUTH_TOKEN = "fbaf1e3b594177bc3eaba69d61735a0a"
-TWILLIO_PHONE_NUMBER = "+12019044071"
+TWILLIO_SID = os.environ.get('TWILLIO_SID', None)
+TWILLIO_AUTH_TOKEN = os.environ.get('TWILLIO_AUTH_TOKEN', None)
+TWILLIO_PHONE_NUMBER = os.environ.get('TWILLIO_PHONE_NUMBER', None)
 SMS_BACKEND = 'services.backends.twillio.TwillioBackend'
 
 # EMAIL / MailGun
 
 ANYMAIL = {
     # (exact settings here depend on your ESP...)
-    "MAILGUN_API_KEY": "key-19a181a760a73b89bbb10d691c5b1202",
-    "MAILGUN_SENDER_DOMAIN": 'appointmentguru.co',  # your Mailgun domain, if needed
+    "MAILGUN_API_KEY": os.environ.get('MAILGUN_API_KEY', None),
+    "MAILGUN_SENDER_DOMAIN": os.environ.get('MAILGUN_SENDER_DOMAIN', None),  # your Mailgun domain, if needed
 }
 EMAIL_BACKEND = "anymail.backends.mailgun.MailgunBackend"  # or sendgrid.SendGridBackend, or...
-DEFAULT_FROM_EMAIL = "info@appointmentguru.co"
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', None)
 
 class GURU_MEDIUMS:
     SMS = 'SMS'

@@ -6,6 +6,56 @@ from django.template import engines
 
 from .models import MessageTemplate
 
+class Sender:
+    phone=None
+    email=None
+    app_id=None
+    name=None
+
+    @classmethod
+    def from_user(cls, user):
+        person = cls()
+        person.phone = user.profile.phone # make this dynamic / a setting
+        person.email = user.email
+        person.app_id = user.username # make this dyamic / a setting
+        person.name = user.get_full_name()
+        return person
+
+class Recipient:
+    phone=None
+    email=None
+    app_id=None
+    name=None
+
+    @classmethod
+    def from_user(cls, user):
+        person = cls()
+        person.phone = user.profile.phone # make this dynamic / a setting
+        person.email = user.email
+        person.app_id = user.username # make this dyamic / a setting
+        person.name = user.get_full_name()
+        return person
+
+# work in progress. This will become the preferred way to send messages:
+def send_template(to, template_id, context, template_owner):
+    '''
+    usage:
+
+    send_template(
+        to=Recipient.from_user(user),
+        from=Sender.from_user(sender_user),
+        template_id='hello-world',
+        context={},
+        template_owner=user)
+    '''
+    msg = self.t.get_message_template(template_id)
+    return CommunicationClient(msg.preferred_delivery_method).send_template(
+        to=to,
+        template_id=self.template_id,
+        context=context,
+        owner=template_owner
+    )
+
 class Templatizer:
 
     def __parse_message(self, message, context):
@@ -16,18 +66,17 @@ class Templatizer:
         return message
 
     def __get_default_template(self, template_id):
-        return MessageTemplate.objects.get(template_id=template_id, is_default_message=True)
+        return MessageTemplate.objects.get(template_id=template_id, is_default_template=True)
 
-    def get_messaage_template(self, template_id, user_id=None):
+    def get_message_template(self, template_id, user_id=None):
 
         if user_id is None:
             return self.__get_default_template(template_id)
 
         try:
-            return MessageTemplate.objects.get(template_id=template_id, user_id=user_id)
-        except MessageTemplate.DpesNotExist:
+            return MessageTemplate.objects.get(template_id=template_id, owner_id=user_id)
+        except MessageTemplate.DoesNotExist:
             return self.__get_default_template
-
 
     def render(self, message, context, base_template='gurucommunication/base.html'):
         message = self.__parse_message(message, context)
@@ -62,15 +111,17 @@ class CommunicationClient:
         if preferred_medium == settings.GURU_MEDIUMS.EMAIL:
             self.client = mail
 
-    def send_template(self, to, template_id, user_id, context):
+    def send_template(self, to, from_user, template, context):
         '''
         Send a templated/pre-defined message
         '''
-        templatizer = Templatizer()
-        template = templatizer.get_messaage_template(template_id, user_id)
-        message = templatizer.render(template_id, message, context)
+        message = Templatizer().render(
+            template,
+            context,
+            base_template=template.email_base_template)
 
-        self.send(to, message)
+        # this needs to be dynamic and send to best medium
+        return self.send(to, message)
 
     def send(self, to, message, subject=None, sender=None, **kwargs):
         '''

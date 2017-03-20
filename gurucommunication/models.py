@@ -35,7 +35,7 @@ class MessageTemplate(models.Model):
         help_text='Set to true if this is the base e-mail template you want to use if the user has not specified a custom one'
     )
     template_id = models.SlugField(help_text='This will be used to uniquely identify this type of message')
-    email_base_template = models.CharField(max_length=100, blank=True, null=True)
+    email_base_template = models.CharField(max_length=100, blank=True, null=True, default='gurucommunication/base.html')
 
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
