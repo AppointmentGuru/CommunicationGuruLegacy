@@ -57,6 +57,7 @@ class MessageTemplate(models.Model):
 class Message(models.Model):
     """
     A log entry for a message send request
+    (maybe this should be SendMessageRequest) ?
     """
     template = models.ForeignKey('MessageTemplate')
     sender = models.ForeignKey(settings.AUTH_USER_MODEL)

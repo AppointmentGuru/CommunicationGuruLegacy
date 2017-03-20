@@ -37,23 +37,23 @@ class Recipient:
         return person
 
 # work in progress. This will become the preferred way to send messages:
-def send_template(to, template_id, context, template_owner):
+def send_template(to, sender, template_id, context, template_owner):
     '''
     usage:
 
     send_template(
         to=Recipient.from_user(user),
-        from=Sender.from_user(sender_user),
+        sender=Sender.from_user(sender_user),
         template_id='hello-world',
         context={},
         template_owner=user)
     '''
-    msg = self.t.get_message_template(template_id)
+    msg = self.t.get_message_template(template_id, template_owner)
     return CommunicationClient(msg.preferred_delivery_method).send_template(
         to=to,
+        sender=sender
         template_id=self.template_id,
-        context=context,
-        owner=template_owner
+        context=context
     )
 
 class Templatizer:

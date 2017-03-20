@@ -88,7 +88,7 @@ class TemplatizerTemplateRenderTestCase(TestCase):
         assert isinstance(msg, MessageTemplate)
 
     def test_can_overide_default_templated_email(self):
-        pass
+        print('TODO')
 
     def test_send_templated_email(self):
         context = {
