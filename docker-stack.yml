@@ -1,0 +1,6 @@
+web:
+    restart: on-failure:10
+    image: appointmentguru/gurucommunication:latest
+    command: gunicorn gurucommunication.wsgi:application -b :8000 --reload
+    ports:
+      - "8000:8000"

@@ -2,3 +2,7 @@ django==1.10
 djangorestframework==3.4.1
 twilio
 django-anymail
+gunicorn
+django_markdown2
+
+ipdb

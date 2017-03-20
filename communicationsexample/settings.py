@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'gurucommunication',
+
+    'django_markdown2',
+    'anymail',
 ]
 
 MIDDLEWARE = [
@@ -113,8 +118,36 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+## Mail variables:
+
+# SMS / TWILLIO
+TWILLIO_SID = "AC017ac887b3e1bf6e48a9b8c360d707af"
+TWILLIO_AUTH_TOKEN = "fbaf1e3b594177bc3eaba69d61735a0a"
+TWILLIO_PHONE_NUMBER = "+12019044071"
+SMS_BACKEND = 'services.backends.twillio.TwillioBackend'
+
+# EMAIL / MailGun
+
+ANYMAIL = {
+    # (exact settings here depend on your ESP...)
+    "MAILGUN_API_KEY": "key-19a181a760a73b89bbb10d691c5b1202",
+    "MAILGUN_SENDER_DOMAIN": 'appointmentguru.co',  # your Mailgun domain, if needed
+}
+EMAIL_BACKEND = "anymail.backends.mailgun.MailgunBackend"  # or sendgrid.SendGridBackend, or...
+DEFAULT_FROM_EMAIL = "info@appointmentguru.co"
+
+class GURU_MEDIUMS:
+    SMS = 'SMS'
+    EMAIL = 'EMAIL'
+
+GURU_COMMUNICATIONS = {
+    'SMS_BACKEND': 'gurucommunication.backends.twillio.TwillioBackend',
+    'PREFERENCE_ORDER': ['SMS', 'EMAIL', 'NOTIFICATION'],
+    'DEFAULT_DELIVERY_METHOD': 'EMAIL'
+}
+

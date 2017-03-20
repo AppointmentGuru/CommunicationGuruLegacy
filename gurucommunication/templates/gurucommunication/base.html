@@ -1,0 +1,7 @@
+{% load staticfiles %}
+{% load md2 %}
+<html>
+	<body>
+	{% block content%}{{message|markdown}}{% endblock %}
+	</body>
+</html>
