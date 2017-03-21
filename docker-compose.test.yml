@@ -1,0 +1,6 @@
+version: '3'
+services:
+  sut:
+    restart: on-failure:10
+    build: .
+    command: python manage.py test

@@ -48,11 +48,11 @@ def send_template(to, sender, template_id, context, template_owner):
         context={},
         template_owner=user)
     '''
-    msg = self.t.get_message_template(template_id, template_owner)
+    msg = Templatizer().get_message_template(template_id, template_owner)
     return CommunicationClient(msg.preferred_delivery_method).send_template(
         to=to,
-        sender=sender
-        template_id=self.template_id,
+        sender=sender,
+        template_id=template_id,
         context=context
     )
 
